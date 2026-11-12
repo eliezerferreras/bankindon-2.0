@@ -130,6 +130,7 @@ export async function registerRoutes(app: FastifyInstance): Promise<void> {
   // se envía tráfico. Mezclarlos hacía que una BD lenta provocara reinicios en
   // cascada de contenedores que estaban perfectamente sanos.
   app.get('/api/health/live', async () => ({ status: 'ok', uptimeSeconds: Math.round(process.uptime()) }));
+  app.get('/healthz', async () => ({ status: 'ok', uptimeSeconds: Math.round(process.uptime()) }));
 
   app.get('/api/health/ready', async (_request, reply) => {
     const database = await pingDatabase();

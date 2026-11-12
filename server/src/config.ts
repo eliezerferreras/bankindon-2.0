@@ -36,7 +36,8 @@ const schema = z.object({
   /** Origen exacto del frontend, sin barra final. */
   WEB_ORIGIN: z
     .string()
-    .url()
+    .transform((val) => (/^https?:\/\//i.test(val) ? val : `https://${val}`))
+    .pipe(z.string().url())
     .transform((value) => value.replace(/\/+$/, ''))
     .default('http://localhost:5173'),
 
