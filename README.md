@@ -27,3 +27,4 @@ Bankindon es una aplicación financiera propia, construida con React, TypeScript
 Las operaciones de pago se registran en transacciones MySQL y con distribución por concepto. Las imágenes se cifran antes de guardarse; el acceso queda restringido a administrador y supervisor y se audita. Las reglas de los productos y los casos que aún requieren cerrar decisiones están en [`docs/REGLAS_FINANCIERAS.md`](docs/REGLAS_FINANCIERAS.md).
 
 Esta aplicación sigue en desarrollo. Antes de usarla con dinero real deben terminarse los flujos pendientes de cartera, conciliación e informes, y validarse las reglas financieras con casos de aceptación acordados. No uses datos reales en pruebas ni compartas `.env`, claves o fotos de clientes.
+# bankindon-2.0
