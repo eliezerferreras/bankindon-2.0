@@ -1,0 +1,24 @@
+# Dependencias y artefactos de compilación
+node_modules/
+dist/
+server/dist/
+*.tsbuildinfo
+tsconfig.server.tsbuildinfo
+
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Código heredado y prototipos (se conservan fuera del repositorio activo)
+/bankindon/
+/lendx-base/
+
+# Pruebas y herramientas
+coverage/
+*.log
+
+# Copias de seguridad: contienen datos personales, nunca se versionan
+backups/
+*.sql
+*.sql.gz

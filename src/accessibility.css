@@ -1,0 +1,203 @@
+/* Larger type, stronger contrast and touch targets across the existing visual system. */
+:root { font-size: 16px; --muted: #aeb5b2; --soft: #c4cac7; }
+body { color: #f0f2ef; }
+.brand-tag { font-size: 10px; }
+.workspace-label { font-size: 12px; }
+.nav-link { min-height: 48px; font-size: 14px; }
+.secure-note strong { font-size: 13px; }
+.secure-note small { font-size: 11px; }
+.user-info strong { font-size: 13px; }
+.user-info span { font-size: 11px; }
+.breadcrumb { font-size: 13px; }
+.search-box input { font-size: 14px; }
+.language-select select, .login-language select { font-size: 14px; }
+.content-wrap { padding-top: 32px; }
+.date-line, .eyebrow { font-size: 11px; }
+.page-heading h1 { font-size: 34px; }
+.page-heading p, .muted-copy { font-size: 15px; line-height: 1.55; }
+.primary-button, .secondary-button { min-height: 46px; padding-inline: 18px; font-size: 14px; }
+.metric-top { font-size: 13px; }
+.metric-value { font-size: 27px; }
+.metric-foot { font-size: 12px; }
+.section-head h2, .banki-title { font-size: 19px; }
+.profit-detail > div { font-size: 12px; }
+.profit-detail > div strong { font-size: 14px; }
+.net-note { font-size: 12px; }
+.cash-summary { font-size: 14px; }
+.table-count, .row-count { font-size: 12px; }
+th { font-size: 11px; padding-block: 13px; }
+td { font-size: 14px; padding-block: 14px; }
+.table-person strong, .movement-table-name strong { font-size: 14px; }
+.movement-type, .movement-amount { font-size: 13px; }
+.setting-field { min-height: 54px; font-size: 14px; }
+.field-label { font-size: 14px; gap: 8px; }
+.field-label input, .field-label select { height: 48px; padding-inline: 12px; font-size: 16px; }
+.setting-field select { min-height: 44px; font-size: 14px; }
+.dialog-head h2 { font-size: 22px; }
+.dialog-form { gap: 16px; }
+.form-error { font-size: 14px; }
+.empty-state strong { font-size: 14px; }
+.empty-state p { font-size: 13px; line-height: 1.5; }
+.login-form-wrap { width: min(420px, 100%); }
+.login-form-wrap h2 { font-size: 30px; }
+.login-form label { font-size: 14px; }
+.login-form input { height: 50px; font-size: 16px; }
+.login-security, .login-language { font-size: 12px; }
+.module-callout h2 { font-size: 17px; }
+.module-callout p, .product-card p { font-size: 14px; line-height: 1.6; }
+.import-clients-button { min-height: 46px; }
+.import-help, .import-columns { margin: 0; color: #c4cac7; font-size: 14px; line-height: 1.55; }
+.import-columns { padding: 12px; border: 1px solid #ffffff16; border-radius: 9px; background: #ffffff05; overflow-wrap: anywhere; }
+.import-file-name { font-size: 13px; color: #a8d8b5; overflow-wrap: anywhere; }
+.import-report { padding: 13px; border: 1px solid #ffffff18; border-radius: 10px; background: #ffffff04; }
+.import-report h3 { margin: 0 0 11px; font-size: 16px; }
+.import-counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 11px; }
+.import-counts span { display: flex; flex-direction: column; gap: 4px; color: #c4cac7; font-size: 12px; }
+.import-counts b { color: #f2f4f0; font-size: 19px; }
+.import-row-list { max-height: 190px; overflow-y: auto; }
+.import-row { min-height: 37px; display: flex; align-items: center; justify-content: space-between; gap: 9px; border-top: 1px solid #ffffff12; color: #e4e8e4; font-size: 12px; }
+.import-status { font-size: 11px; }
+.import-status.ready { color: #9bd6ac; }
+.import-status.duplicate { color: #efca7e; }
+.import-status.invalid { color: #f09c91; }
+.document-upload-section { display: grid; gap: 12px; padding: 14px; border: 1px solid #ffffff18; border-radius: 11px; background: #ffffff04; }
+.document-upload-section > div:first-child > strong { color: #e7e9e5; font-size: 15px; }
+.document-upload-section p { margin: 5px 0 0; color: #b7bfbb; font-size: 12px; line-height: 1.5; }
+.document-upload-section input[type="file"] { height: auto; min-height: 48px; padding: 8px; font-size: 12px; }
+.documents-privacy-note { display: flex; gap: 8px; align-items: flex-start; }
+.client-documents-dialog { display: grid; gap: 14px; }
+.client-document-card { padding: 12px; border: 1px solid #ffffff16; border-radius: 12px; background: #ffffff04; }
+.client-document-heading { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; font-size: 13px; }
+.client-document-heading span { color: #aeb5b2; overflow-wrap: anywhere; text-align: right; }
+.client-document-card a { display: block; text-align: center; }
+.client-document-card img { width: 100%; max-height: 55vh; object-fit: contain; border-radius: 8px; background: #080a0b; }
+.product-card h3 { font-size: 17px; }
+.product-card div { font-size: 12px; }
+
+@media (min-width: 621px) and (max-width: 820px) {
+  .sidebar { width: 212px; align-items: stretch; padding-inline: 12px; }
+  .brand-lockup { padding: 0 4px 22px; }
+  .brand-lockup > div:not(.brand-mark), .workspace-label, .nav-link > span:not(.nav-icon), .sidebar-bottom .secure-note, .user-info, .signout { display: initial; }
+  .workspace-label { display: flex; }
+  .sidebar-nav { align-items: stretch; }
+  .nav-link { width: 100%; justify-content: flex-start; }
+  .nav-live { display: block !important; }
+  .sidebar-bottom { width: auto; }
+  .main-panel { margin-left: 212px; }
+  .content-wrap { padding-inline: 22px; }
+  .topbar { padding-inline: 22px; }
+}
+
+@media (max-width: 620px) {
+  body { min-width: 320px; }
+  .main-panel { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+  .topbar { height: 60px; padding-inline: 14px; }
+  .breadcrumb { font-size: 13px; gap: 7px; }
+  .topbar-actions { gap: 8px; }
+  .language-select { min-height: 42px; padding-inline: 6px; }
+  .language-select select { font-size: 14px; }
+  .content-wrap { padding: 22px 16px 30px; }
+  .page-heading { align-items: center; gap: 10px; }
+  .page-heading h1 { font-size: 30px; line-height: 1.15; margin-top: 9px; }
+  .page-heading p { max-width: none; font-size: 15px; line-height: 1.5; }
+  .date-line { font-size: 10px; letter-spacing: .7px; }
+  .page-heading > .primary-button { min-height: 48px; margin-top: 15px; padding-inline: 12px; gap: 6px; font-size: 13px; }
+  .metric-grid { gap: 10px; }
+  .metric-card { padding: 14px; border-radius: 13px; }
+  .metric-top { font-size: 12px; line-height: 1.35; }
+  .metric-value { font-size: clamp(19px, 5.5vw, 24px); margin: 12px 0 8px; }
+  .metric-foot { font-size: 10px; line-height: 1.35; }
+  .metric-icon { width: 28px; height: 28px; font-size: 16px; }
+  .insight-grid, .lower-grid { gap: 10px; margin-top: 10px; }
+  .performance-panel, .capital-panel, .activity-panel, .client-panel { padding: 17px; }
+  .section-head h2, .banki-title { font-size: 19px; line-height: 1.35; }
+  .eyebrow { font-size: 10px; line-height: 1.4; }
+  .profit-amount { font-size: 24px; }
+  .profit-detail { gap: 9px; }
+  .profit-detail > div { font-size: 11px; line-height: 1.35; }
+  .profit-detail > div strong { font-size: 13px; }
+  .net-note { font-size: 12px; line-height: 1.55; }
+  .capital-amount { font-size: 24px; }
+  .capital-legend { font-size: 12px; gap: 8px; }
+  .capital-legend b { font-size: 12px; }
+  .client-name strong { font-size: 14px; }
+  .client-name span { font-size: 12px; }
+  .status-pill { font-size: 11px; padding: 5px 9px; }
+  .movement-row { gap: 11px; padding: 12px 0; }
+  .movement-icon { width: 34px; height: 34px; }
+  .movement-desc strong { font-size: 13px; }
+  .movement-desc span { font-size: 11px; }
+  .movement-amount { font-size: 12px; }
+  .mobile-nav { height: calc(78px + env(safe-area-inset-bottom)); padding: 6px 4px calc(7px + env(safe-area-inset-bottom)); justify-content: space-around; overflow: hidden; }
+  .mobile-nav button { flex: 1 1 0; min-width: 0; min-height: 58px; gap: 4px; color: #aeb5b2; }
+  .mobile-nav button > span { font-size: 21px; line-height: 1.1; }
+  .mobile-nav small { max-width: 100%; font-size: 10px; line-height: 1.1; white-space: normal; text-align: center; }
+  .mobile-nav button.active { color: #f0cc82; }
+  .heading-actions { flex-direction: row; gap: 8px; }
+  .heading-actions button { min-height: 44px; height: auto; flex: 1; padding-inline: 8px; font-size: 12px; }
+  .table-toolbar { min-height: 66px; height: auto; gap: 8px; padding: 10px 12px; }
+  .table-search { width: 100%; min-width: 0; height: 44px; }
+  .table-search input { font-size: 14px; }
+  .table-count { font-size: 11px; white-space: nowrap; }
+  .responsive-table { overflow: visible; }
+  .responsive-table table, .user-table table { width: 100%; min-width: 0; white-space: normal; }
+  .responsive-table thead, .user-table thead { display: none; }
+  .responsive-table tbody, .user-table tbody { display: grid; gap: 11px; padding: 11px; }
+  .responsive-table tr, .user-table tr { display: block; padding: 8px 13px; border: 1px solid #ffffff16; border-radius: 13px; background: #171b1d; }
+  .responsive-table td, .user-table td { display: flex; justify-content: space-between; align-items: center; gap: 14px; min-height: 43px; padding: 8px 0 !important; border-top: 1px solid #ffffff12; text-align: right; white-space: normal; font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; }
+  .responsive-table td:first-child, .user-table td:first-child { padding-left: 0 !important; }
+  .responsive-table td:first-child, .user-table td:first-child { border-top: 0; }
+  .responsive-table td::before, .user-table td::before { content: attr(data-label); flex: 0 0 38%; color: #c5cbc8; text-align: left; font-size: 12px; font-weight: 600; }
+  .responsive-table td > *, .user-table td > * { max-width: 62%; }
+  .client-list-table .table-person { justify-content: flex-end; gap: 8px; }
+  .client-list-table .table-person .avatar { display: none; }
+  .client-list-table .table-person strong, .loan-list-table td:first-child > strong, .payment-list-table td:first-child > strong { font-size: 14px; }
+  .table-subtitle { display: block; width: 100%; text-align: right; font-size: 12px; }
+  .payment-list-table td:last-child { justify-content: flex-end; }
+  .payment-list-table td:last-child::before { margin-right: auto; }
+  .payment-list-table .compact-button { min-height: 44px; }
+  .banki-list-table .movement-table-name { justify-content: flex-end; }
+  .banki-list-table .movement-table-name .movement-icon { display: none; }
+  .banki-list-table .movement-table-name strong { font-size: 13px; }
+  .table-empty { padding: 30px 14px; }
+  .table-empty .primary-button { min-height: 48px; }
+  .settings-grid { gap: 12px; }
+  .settings-card { padding: 17px; }
+  .setting-field { min-height: 55px; font-size: 13px; gap: 8px; }
+  .setting-field select { max-width: 56%; }
+  .user-management { padding: 15px; }
+  .user-management .section-head { gap: 8px; }
+  .user-management .primary-button { min-height: 44px; padding-inline: 11px; font-size: 12px; }
+  .dialog-backdrop { align-items: end; padding: 0; }
+  .dialog { width: 100%; max-width: none; max-height: 92dvh; padding: 20px 18px calc(18px + env(safe-area-inset-bottom)); border-radius: 18px 18px 0 0; }
+  .dialog-head { margin-bottom: 14px; }
+  .dialog-head h2 { font-size: 22px; line-height: 1.25; }
+  .dialog-form { gap: 15px; }
+  .field-label { font-size: 14px; }
+  .field-label input, .field-label select { height: 50px; font-size: 16px; }
+  .dialog-actions { position: sticky; bottom: -18px; padding: 13px 0 2px; background: #111516; }
+  .dialog-actions .primary-button, .dialog-actions .secondary-button { flex: 1; min-height: 50px; }
+  .login-panel { padding: 22px 22px calc(35px + env(safe-area-inset-bottom)); }
+  .login-language { top: 20px; right: 20px; font-size: 13px; }
+  .login-form-wrap { margin: 38px auto; }
+  .login-form-wrap h2 { font-size: 29px; }
+  .login-form label { font-size: 14px; }
+  .login-form input { height: 52px; font-size: 16px; }
+  .login-form { gap: 18px; }
+  .login-form .primary-button { min-height: 52px; font-size: 15px; }
+  .login-security { font-size: 11px; }
+  .login-copyright { bottom: calc(12px + env(safe-area-inset-bottom)); font-size: 9px; }
+  .module-callout { align-items: flex-start; }
+  .module-callout h2 { font-size: 17px; }
+  .module-callout p, .product-card p { font-size: 14px; }
+  .import-clients-button { min-height: 44px; }
+  .import-counts { grid-template-columns: 1fr; }
+  .import-counts span { flex-direction: row; justify-content: space-between; align-items: center; }
+  .import-counts b { font-size: 16px; }
+  .document-upload-section { padding: 12px; }
+  .document-upload-section .form-row { gap: 12px; }
+  .document-upload-section input[type="file"] { width: 100%; font-size: 12px; }
+  .client-document-heading { flex-direction: column; }
+  .client-document-heading span { text-align: left; }
+  .alert-error { font-size: 14px; line-height: 1.5; }
+}

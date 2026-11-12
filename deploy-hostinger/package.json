@@ -1,0 +1,53 @@
+{
+  "name": "bankindon",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:web": "vite --host 0.0.0.0",
+    "dev:api": "tsx watch server/src/index.ts",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -p tsconfig.server.json --noEmit && tsc -p tsconfig.app.json --incremental false",
+    "test": "node --import tsx --test tests/",
+    "test:finance": "node --import tsx --test tests/finance/*.test.ts",
+    "test:smoke": "node tests/smoke/api-smoke.mjs",
+    "start": "node server/dist/index.js",
+    "db:migrate": "tsx server/src/db/migrate.ts",
+    "db:migrate:prod": "node server/dist/db/migrate.js",
+    "db:backup": "node scripts/backup-db.mjs",
+    "db:restore": "node scripts/restore-db.mjs",
+    "clients:import-old": "node scripts/import-old-clients.mjs",
+    "db:bootstrap-admin": "tsx server/src/scripts/bootstrap-admin.ts",
+    "db:reset-admin-password": "tsx server/src/scripts/reset-admin-password.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/helmet": "^13.0.1",
+    "@fastify/rate-limit": "^10.2.1",
+    "@fastify/cors": "^10.0.2",
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^16.4.7",
+    "fastify": "^5.2.1",
+    "jose": "^6.0.8",
+    "mysql2": "^3.12.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.5",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.13.4",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "tsx": "^4.19.3",
+    "typescript": "~5.7.2",
+    "vite": "^6.1.0"
+  }
+}

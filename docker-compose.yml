@@ -1,0 +1,101 @@
+# =============================================================================
+# Bankindon · entorno de producción en una sola máquina
+# =============================================================================
+# Uso:
+#   1. Copia .env.example a .env y define APP_SECRET, DOCUMENT_KEY, DB_* y
+#      las credenciales del administrador inicial.
+#   2. docker compose up -d --build
+#   3. docker compose exec app node server/dist/scripts/bootstrap-admin.js
+#      (solo la primera vez)
+#
+# Para desarrollo local con HMR no uses este archivo: usa `npm run dev`.
+# =============================================================================
+
+name: bankindon
+
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      # InnoDB necesita este ajuste en tablas con muchos índices secundarios.
+      - --innodb-buffer-pool-size=512M
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Define DB_ROOT_PASSWORD en .env}
+      MYSQL_DATABASE: ${DB_NAME:-bankindon}
+      MYSQL_USER: ${DB_USER:-bankindon}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      # El arranque inicial de MySQL es lento; sin `start_period` el contenedor
+      # se marcaría como no sano antes de estar listo.
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    # Sin puerto publicado: la base de datos no debe ser accesible desde fuera.
+    networks: [internal]
+
+  migrate:
+    build:
+      context: .
+      target: runtime
+    image: bankindon:local
+    restart: "no"
+    environment: &app_environment
+      NODE_ENV: production
+      APP_SECRET: ${APP_SECRET:?Define APP_SECRET (mínimo 32 caracteres) en .env}
+      DOCUMENT_KEY: ${DOCUMENT_KEY:?Define DOCUMENT_KEY (mínimo 32 caracteres) en .env}
+      SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-8}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      TRUST_PROXY: ${TRUST_PROXY:-false}
+      WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:4000}
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-bankindon}
+      DB_USER: ${DB_USER:-bankindon}
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env}
+      DB_POOL_SIZE: ${DB_POOL_SIZE:-10}
+      ACCRUAL_ENABLED: ${ACCRUAL_ENABLED:-true}
+      ACCRUAL_INTERVAL_MINUTES: ${ACCRUAL_INTERVAL_MINUTES:-15}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    command: ["node", "server/dist/db/migrate.js"]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [internal]
+
+  app:
+    build:
+      context: .
+      target: runtime
+    image: bankindon:local
+    restart: unless-stopped
+    environment:
+      <<: *app_environment
+      PORT: 4000
+    ports:
+      - "${APP_PORT:-4000}:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    # Límites de recursos: un pico de tráfico no debe tumbar la base de datos.
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    networks: [internal]
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  internal:
+    driver: bridge

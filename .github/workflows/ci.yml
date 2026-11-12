@@ -1,0 +1,188 @@
+name: CI
+
+# Se ejecuta en cada push a main y en cada pull request. La regla es simple:
+# si este pipeline no pasa, el cambio no se despliega.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Un push nuevo cancela la ejecución anterior de la misma rama: se ahorra
+# tiempo y no se despliega un commit ya obsoleto.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  APP_SECRET: 'ci-only-secret-at-least-32-characters-long!!'
+  DOCUMENT_KEY: 'ci-only-document-key-at-least-32-chars!!!'
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1. Calidad: tipos, pruebas unitarias y build de producción.
+  # ---------------------------------------------------------------------------
+  quality:
+    name: Tipos, pruebas y build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      # `npm ci` instala exactamente lo que dice el lockfile: builds
+      # reproducibles (nunca `npm install` en CI).
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Comprobar tipos (web y servidor)
+        run: npm run typecheck
+
+      - name: Pruebas unitarias
+        run: npm test
+
+      - name: Build de producción
+        run: npm run build
+
+      - name: Publicar el artefacto web
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist/web
+          retention-days: 7
+
+  # ---------------------------------------------------------------------------
+  # 2. Integración: MySQL real, migraciones idempotentes y humo del API.
+  # ---------------------------------------------------------------------------
+  integration:
+    name: Integración con MySQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root-ci-password
+          MYSQL_DATABASE: bankindon_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot-ci-password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+    env:
+      NODE_ENV: test
+      PORT: '4000'
+      WEB_ORIGIN: 'http://127.0.0.1:4000'
+      APP_SECRET: 'ci-only-secret-at-least-32-characters-long!!'
+      DOCUMENT_KEY: 'ci-only-document-key-at-least-32-chars!!!'
+      DB_HOST: 127.0.0.1
+      DB_PORT: '3306'
+      DB_NAME: bankindon_test
+      DB_USER: root
+      DB_PASSWORD: root-ci-password
+      DB_POOL_SIZE: '10'
+      COOKIE_SECURE: 'false'
+      TRUST_PROXY: 'false'
+      ACCRUAL_ENABLED: 'false'
+      LOG_LEVEL: warn
+      BOOTSTRAP_ADMIN_NAME: 'Admin CI'
+      BOOTSTRAP_ADMIN_EMAIL: 'admin@ci.test'
+      BOOTSTRAP_ADMIN_PASSWORD: 'ci-password-123456'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Aplicar migraciones
+        run: npm run db:migrate
+
+      - name: Reaplicar migraciones (deben ser idempotentes)
+        run: npm run db:migrate
+
+      - name: Crear administrador inicial
+        run: npm run db:bootstrap-admin
+
+      - name: Build
+        run: npm run build
+
+      - name: Arrancar el API
+        run: |
+          node server/dist/index.js &
+          echo $! > /tmp/api.pid
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4000/api/health/ready > /dev/null; then
+              echo "API lista tras ${attempt} intentos."
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "El API no respondió a tiempo." >&2
+          exit 1
+
+      - name: Prueba de humo del API
+        run: npm run test:smoke
+
+      - name: Logs del API si algo falla
+        if: failure()
+        run: |
+          echo "--- health/live ---"
+          curl -sS http://127.0.0.1:4000/api/health/live || true
+          echo
+          echo "--- health/ready ---"
+          curl -sS http://127.0.0.1:4000/api/health/ready || true
+
+  # ---------------------------------------------------------------------------
+  # 3. Seguridad: dependencias vulnerables y secretos filtrados.
+  # ---------------------------------------------------------------------------
+  security:
+    name: Auditoría de dependencias
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      # Solo dependencias de producción: las de desarrollo no llegan a la imagen.
+      - name: npm audit (producción)
+        run: npm audit --omit=dev --audit-level=high
+
+  # ---------------------------------------------------------------------------
+  # 4. Imagen Docker: se compila siempre para detectar roturas del Dockerfile.
+  # ---------------------------------------------------------------------------
+  docker:
+    name: Construir imagen Docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build (sin publicar)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: bankindon:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Comprobar que la imagen arranca
+        run: |
+          docker run --rm --entrypoint node bankindon:ci --version
