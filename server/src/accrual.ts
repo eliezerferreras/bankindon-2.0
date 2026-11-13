@@ -200,7 +200,7 @@ async function accrueLoan(connection: PoolConnection, loan: LoanRow, today: stri
   let pauseHistory: LoanAdjustmentRow[] = [];
   if (loan.product === 'traditional') {
     const [paymentRows] = await connection.execute(
-      "SELECT a.installment_id,DATE_FORMAT(p.paid_at,'%Y-%m-%d') AS paid_on,SUM(a.amount) AS amount FROM payment_allocations a JOIN payments p ON p.id=a.payment_id AND p.status='posted' WHERE p.loan_id=? AND a.component='principal' AND a.installment_id IS NOT NULL GROUP BY a.installment_id,DATE(p.paid_at)",
+      "SELECT a.installment_id,DATE_FORMAT(p.paid_at,'%Y-%m-%d') AS paid_on,SUM(a.amount) AS amount FROM payment_allocations a JOIN payments p ON p.id=a.payment_id AND p.status='posted' WHERE p.loan_id=? AND a.component='principal' AND a.installment_id IS NOT NULL GROUP BY a.installment_id,paid_on",
       [loan.id],
     );
     principalPayments = paymentRows as PrincipalPaymentRow[];
