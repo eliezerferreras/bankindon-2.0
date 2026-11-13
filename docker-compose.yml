@@ -63,6 +63,9 @@ services:
       ACCRUAL_ENABLED: ${ACCRUAL_ENABLED:-true}
       ACCRUAL_INTERVAL_MINUTES: ${ACCRUAL_INTERVAL_MINUTES:-15}
       LOG_LEVEL: ${LOG_LEVEL:-info}
+      BOOTSTRAP_ADMIN_NAME: ${BOOTSTRAP_ADMIN_NAME:-Administrador}
+      BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-admin@example.com}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:-}
     command: ["node", "server/dist/db/migrate.js"]
     depends_on:
       db:
