@@ -44,6 +44,8 @@ const app = Fastify({
   trustProxy: config.TRUST_PROXY,
 });
 
+const isSecureHttp = config.COOKIE_SECURE;
+
 await app.register(helmet, {
   // La CSP solo tiene sentido en producción; en desarrollo el API no sirve HTML.
   contentSecurityPolicy: isProduction
@@ -60,12 +62,14 @@ await app.register(helmet, {
           frameAncestors: ["'none'"],
           baseUri: ["'self'"],
           formAction: ["'self'"],
+          upgradeInsecureRequests: isSecureHttp ? [] : null,
         },
       }
     : false,
   // HSTS solo debe enviarse cuando la conexión ya es HTTPS de extremo a extremo.
-  hsts: isProduction ? { maxAge: 31_536_000, includeSubDomains: true } : false,
+  hsts: isSecureHttp ? { maxAge: 31_536_000, includeSubDomains: true } : false,
   crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: isSecureHttp ? { policy: 'same-origin' } : false,
 });
 
 await app.register(cors, {
