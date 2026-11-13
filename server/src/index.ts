@@ -180,8 +180,9 @@ const CONTENT_TYPES: Record<string, string> = {
 
 /** Impide que una ruta codificada (`..`, `%2e%2e`) escape del directorio web. */
 function isContained(candidate: string): boolean {
-  const path = relative(webRoot, candidate);
-  return path === '' || (path !== '..' && !path.startsWith(`..${sep}`) && !resolve(path).startsWith(sep));
+  const resolvedCandidate = resolve(candidate);
+  const resolvedRoot = resolve(webRoot);
+  return resolvedCandidate === resolvedRoot || resolvedCandidate.startsWith(resolvedRoot + sep);
 }
 
 async function serveStatic(url: string, reply: import('fastify').FastifyReply) {
